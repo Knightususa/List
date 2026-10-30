@@ -20,8 +20,6 @@ typedef struct
     List_element *data;
     List_elem_t poison;
     int size;
-    int tail;
-    int head;
     int freehead;
 }List;
 

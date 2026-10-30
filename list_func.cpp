@@ -5,10 +5,13 @@ List List_init(int list_size, List_elem_t poison)
     List list;
     list.size = list_size;
     list.poison = poison;
+
     list.data = (List_element *)safe_calloc(list_size, sizeof(List_element));
-    list.tail = 0;
-    list.head = 0;
-    list.freehead = 0;
+    list.data[0].value = list.poison;
+    list.data[0].next = 0;
+    list.data[0].prev = 0;
+
+    list.freehead = 1;
 
     for(int i = 0; i < list_size; i++)
     {
@@ -16,14 +19,14 @@ List List_init(int list_size, List_elem_t poison)
 
         if(i == 0)
         {
-            list.data[i].prev = poison;
-            list.data[i].next = i + 1;
+            list.data[i].prev = 0;
+            list.data[i].next = 0;
             continue;
         }
-        else if(i == list_size)
+        else if(i == list_size - 1)
         {
-            list.data[i].next = poison;
             list.data[i].prev = i - 1;
+            list.data[i].next = 0;
             continue;
         }
 
@@ -36,7 +39,9 @@ List List_init(int list_size, List_elem_t poison)
 
 void List_add(List *list, int insert_index, List_elem_t element_value)
 {
-    int index = list->tail;
+    List_element *data = list->data;
+    int index = list->data[0].next;
+
     for(int i = 0; i < insert_index; i++)
     {
         index = list->data[index].next;
@@ -48,25 +53,24 @@ void List_add(List *list, int insert_index, List_elem_t element_value)
     int free_index = list->freehead;
     int index_next = list->data[index].next;
 
-    //Сдвигаем все для головы free
-    if(index == list->head)
-        list->head = free_index;
-    list->freehead = list->data[list->freehead].next;
-    list->data[list->freehead].prev = list->poison;
+    list->freehead = list->data[free_index].next;
+    data[list->freehead].prev = list->poison;
 
     //Сдвигаем для free_index
-    list->data[free_index].value = element_value;
-    list->data[free_index].prev = index;
-    list->data[free_index].next = index_next;
-    list->data[index].next = free_index;
+    data[free_index].value = element_value;
+    data[free_index].prev = index;
+    data[free_index].next = index_next;
+    data[index].next = free_index;
 
     //Сдвигаем для index_next
-    list->data[index_next].prev = free_index;
+    data[index_next].prev = free_index;
 }
 
 void List_delete(List *list, int delete_index)
 {
-    int index = list->tail;
+    List_element *data = list->data;
+    int index = list->data[0].next;
+
     for(int i = 0; i < delete_index; i++)
     {
         index = list->data[index].next;
@@ -75,23 +79,20 @@ void List_delete(List *list, int delete_index)
     //index - индекс удаляемого елемента
     //prev_index - индекс элемента перед index
     //next_index - индекс элемента после index
-    int prev_index = list->data[index].prev;
-    int next_index = list->data[index].next;
+    int prev_index = data[index].prev;
+    int next_index = data[index].next;
 
-    //Меняем предыдущий
-    if(index == list->head)
-        list->head = prev_index;
-    list->data[prev_index].next = next_index;
+    data[prev_index].next = next_index;
 
     //Меняем значение и голову free
-    list->data[index].value = list->poison;
-    list->data[index].next = list->freehead;
-    list->data[list->freehead].prev = index;
-    list->data[index].prev = list->poison;
+    data[index].value = list->poison;
+    data[index].next = list->freehead;
+    data[list->freehead].prev = index;
+    data[index].prev = list->poison;
     list->freehead = index;
 
     //Меняем следующий
-    list->data[next_index].prev = prev_index;
+    data[next_index].prev = prev_index;
 }
 
 
@@ -109,10 +110,10 @@ void List_show(List list)
     printf("\n");
     for(int i = 0; i < list_size; i++)
     {
-        if(i == list.tail)
+        if(i == list.data[0].next)
             printf(_RED);
 
-        if(i == list.head)
+        if(i == list.data[0].prev)
             printf(_GREEN);
 
         if(i == list.freehead)
