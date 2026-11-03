@@ -23,7 +23,7 @@ typedef struct
     int freehead;
 }List;
 
-List List_init(int list_size, List_elem_t poison);
+List *List_init(int list_size, List_elem_t poison);
 void List_add(List *list, int insert_index, List_elem_t element_value);
 void List_delete(List *list, int delete_index);
 void List_show(List list);

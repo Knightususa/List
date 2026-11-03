@@ -1,7 +1,8 @@
 #include "./list_func.h"
 
-List List_init(int list_size, List_elem_t poison)
+List *List_init(int list_size, List_elem_t poison)
 {
+    List *list1 = (List *)safe_calloc(1, sizeof(List)); 
     List list;
     list.size = list_size;
     list.poison = poison;
@@ -33,8 +34,8 @@ List List_init(int list_size, List_elem_t poison)
         list.data[i].next = i + 1;
         list.data[i].prev = i - 1;
     }
-
-    return list;
+    *list1 = list;
+    return list1;
 }
 
 void List_add(List *list, int insert_index, List_elem_t element_value)
@@ -103,7 +104,8 @@ void List_show(List list)
     const char *str_prev   = "prev";
     const char *str_value  = "value";
     const char *str_next   = "next";
-    printf("%10s | %10s | %10s | %10s\n", str_index, str_prev, str_value, str_next);
+    const char *str_name   = "name";
+    printf("%10s | %10s | %10s | %10s | %10s\n", str_index, str_prev, str_value, str_next, str_name);
     for(int i = 0; i < 4; i++)
         for(int j = 0; j < 15; j++)
             printf("-");
@@ -113,13 +115,23 @@ void List_show(List list)
         if(i == list.data[0].next)
             printf(_RED);
 
-        if(i == list.data[0].prev)
+        else if(i == list.data[0].prev)
             printf(_GREEN);
 
-        if(i == list.freehead)
+        else if(i == list.freehead)
             printf(_BLUE);
 
-        printf("%10i | %10i | %10i | %10i\n" _RESET, i, list.data[i].prev, list.data[i].value, list.data[i].next);
+        printf("%10i | %10i | %10i | %10i |" _RESET, i, list.data[i].prev, list.data[i].value, list.data[i].next);
+
+        if(i == list.data[0].next)
+            printf("%10s", "head");
+
+        else if(i == list.data[0].prev)
+            printf("%10s", "tail");
+
+        else if(i == list.freehead)
+            printf("%10s", "free_head");
+        printf("\n");
     }
     printf("\n\n");
 }
