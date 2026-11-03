@@ -23,6 +23,8 @@ int main()
 
     char input_file[] = "pic1.dot";
     char output_file[] = "pic1.svg";
+    char html_file[] = "pic1.html";
     MkDotFileList(input_file, *list);
     CompileDotFile(input_file, output_file);
+    MkHTMLFileList(html_file, output_file);
 }

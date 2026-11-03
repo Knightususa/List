@@ -27,7 +27,7 @@ List *List_init(int list_size, List_elem_t poison)
         else if(i == list_size - 1)
         {
             list.data[i].prev = i - 1;
-            list.data[i].next = 0;
+            list.data[i].next = poison;
             continue;
         }
 

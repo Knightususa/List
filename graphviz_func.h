@@ -7,8 +7,10 @@
 void MkDotFileList(char *file_name, List list);
 void WriteGraphSettings(FILE *file);
 void WriteList(FILE *file, List list);
+void WriteHead(FILE *file, List list);
 
 void CompileDotFile(char *inputFile, char *outputFile);
+void MkHTMLFileList(char *htmlFileName, char *imageFileName);
 
 #endif
 //end ifndef GRAPHVIZ_FUNC_H
