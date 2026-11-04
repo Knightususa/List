@@ -2,6 +2,7 @@
 
 void MkDotFileList(char *file_name, List list)
 {
+    // list.data[1].prev = 4; //For testing red arrows
     yaissert(file_name != NULL);
     //TODO: CheckList
 
@@ -9,7 +10,7 @@ void MkDotFileList(char *file_name, List list)
     FILE *file = safe_fopen(file_name, open_mode);
 
     fprintf(file,   "digraph G {\n"
-                    "\tsplines = ortho;\n");
+                    "splines = curved\n");
 
     WriteGraphSettings(file);
     WriteList(file, list);
@@ -51,32 +52,29 @@ void WriteGraphSettings(FILE *file)
 void WriteList(FILE *file, List list)
 {
     int size = list.size;
-    bool flag = 0;
+    bool is_0_elem = 0;
     for(int i = 0; i < size; i++)
     {
         if(i == 0)
         {
             fprintf(file, "\tnode [fillcolor = \"#c5285c74\"]\n");
-            flag = 1;
+            is_0_elem = 1;
         }
-        else if(flag)
+        else if(is_0_elem)
         {
             fprintf(file, "\n\tnode [fillcolor = \"#478d9a8a\"]\n");
-            flag = 0;
+            is_0_elem = 0;
         }
         
+        char value[32];
 
-        if(list.data[i].value == list.poison)
-        {
-            fprintf(file, "\t%i [label = <{index %i | POISON |{prev %i| next %i}}>];\n",
-                 i, i, list.data[i].prev, list.data[i].next);
-        }
+        if (list.data[i].value == list.poison)
+            snprintf(value, sizeof(value), "%s", "POISON");
         else
-        {
-            fprintf(file, "\t%i [label = <{index %i | %i |{prev %i| next %i}}>];\n",
-                 i, i, list.data[i].value, list.data[i].prev, list.data[i].next);
-        }
+            snprintf(value, sizeof(value), "%d", list.data[i].value);
 
+        fprintf(file, "\t%i [label = \"{<index> index %i | %s |{<prev> prev %i|<next> next %i}}\"];\n",
+            i, i, value, list.data[i].prev, list.data[i].next);
     }
     fprintf(file, "\n\tnode [fillcolor = \"#78a5728b\"]\n");
     fprintf(file, "\thead\n");
@@ -86,11 +84,23 @@ void WriteList(FILE *file, List list)
     
     for(int i = 0; i < size; i++)
     {
-        if(list.data[i].next != list.poison)
-            fprintf(file, "\t%i -> %i [color = \"#eaacef\"];\n", i, list.data[i].next);
-
-        if(list.data[i].prev != list.poison)
-            fprintf(file, "\t%i -> %i [color = \"#F47F41\"];\n", i, list.data[i].prev);
+        int index_next = list.data[i].next;
+        int index_prev = list.data[i].prev;
+        bool isValid_next = list.data[index_next].prev == i;
+        bool isValid_prev = list.data[index_prev].next == i;
+        if(index_next != list.poison)
+        {
+            if(isValid_next)
+                fprintf(file, "\t%i:next:e -> %i:prev:w [color = \"#eaacef\"];\n", i, list.data[i].next);
+            else
+                fprintf(file, "\t%i:next:e -> %i:prev:w [color = \"#fc0d0d\"];\n", i, list.data[i].next);
+            
+        }
+        if(list.data[i].prev != list.poison && !isValid_prev)
+        {
+            if(!isValid_prev)
+                fprintf(file, "\t%i:prev:s -> %i:next:s [color = \"#fc0d0d\"];\n", i, list.data[i].prev);
+        }
     }
     fprintf(file, "\n");
     

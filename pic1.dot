@@ -1,46 +1,37 @@
 digraph G {
-	splines = ortho;
+splines = curved
 	graph [bgcolor = "#5B8298"]
 	node [shape = record, fontname = "Consolas", style = "rounded, filled", height = 0.5, width = 1, color = "#86BBD8", fontcolor = "#E8F1F5", penwidth = 3]
 	edge [color = "#2F4858", fontcolor = "#2F4858", penwidth = 2, arrowsize = 0.6];
 
 	node [fillcolor = "#c5285c74"]
-	0 [label = <{index 0 | POISON |{prev 3| next 1}}>];
+	0 [label = "{<index> index 0 | POISON |{<prev> prev 3|<next> next 1}}"];
 
 	node [fillcolor = "#478d9a8a"]
-	1 [label = <{index 1 | 10 |{prev 0| next 2}}>];
-	2 [label = <{index 2 | 11 |{prev 1| next 3}}>];
-	3 [label = <{index 3 | 12 |{prev 2| next 0}}>];
-	4 [label = <{index 4 | POISON |{prev -1| next 5}}>];
-	5 [label = <{index 5 | POISON |{prev 4| next 6}}>];
-	6 [label = <{index 6 | POISON |{prev 5| next 7}}>];
-	7 [label = <{index 7 | POISON |{prev 6| next 8}}>];
-	8 [label = <{index 8 | POISON |{prev 7| next 9}}>];
-	9 [label = <{index 9 | POISON |{prev 8| next -1}}>];
+	1 [label = "{<index> index 1 | 10 |{<prev> prev 0|<next> next 2}}"];
+	2 [label = "{<index> index 2 | 11 |{<prev> prev 1|<next> next 3}}"];
+	3 [label = "{<index> index 3 | 12 |{<prev> prev 2|<next> next 0}}"];
+	4 [label = "{<index> index 4 | POISON |{<prev> prev -1|<next> next 5}}"];
+	5 [label = "{<index> index 5 | POISON |{<prev> prev 4|<next> next 6}}"];
+	6 [label = "{<index> index 6 | POISON |{<prev> prev 5|<next> next 7}}"];
+	7 [label = "{<index> index 7 | POISON |{<prev> prev 6|<next> next 8}}"];
+	8 [label = "{<index> index 8 | POISON |{<prev> prev 7|<next> next 9}}"];
+	9 [label = "{<index> index 9 | POISON |{<prev> prev 8|<next> next -1}}"];
 
 	node [fillcolor = "#78a5728b"]
 	head
 	tail
 	free_head
 
-	0 -> 1 [color = "#eaacef"];
-	0 -> 3 [color = "#F47F41"];
-	1 -> 2 [color = "#eaacef"];
-	1 -> 0 [color = "#F47F41"];
-	2 -> 3 [color = "#eaacef"];
-	2 -> 1 [color = "#F47F41"];
-	3 -> 0 [color = "#eaacef"];
-	3 -> 2 [color = "#F47F41"];
-	4 -> 5 [color = "#eaacef"];
-	5 -> 6 [color = "#eaacef"];
-	5 -> 4 [color = "#F47F41"];
-	6 -> 7 [color = "#eaacef"];
-	6 -> 5 [color = "#F47F41"];
-	7 -> 8 [color = "#eaacef"];
-	7 -> 6 [color = "#F47F41"];
-	8 -> 9 [color = "#eaacef"];
-	8 -> 7 [color = "#F47F41"];
-	9 -> 8 [color = "#F47F41"];
+	0:next:e -> 1:prev:w [color = "#eaacef"];
+	1:next:e -> 2:prev:w [color = "#eaacef"];
+	2:next:e -> 3:prev:w [color = "#eaacef"];
+	3:next:e -> 0:prev:w [color = "#eaacef"];
+	4:next:e -> 5:prev:w [color = "#eaacef"];
+	5:next:e -> 6:prev:w [color = "#eaacef"];
+	6:next:e -> 7:prev:w [color = "#eaacef"];
+	7:next:e -> 8:prev:w [color = "#eaacef"];
+	8:next:e -> 9:prev:w [color = "#eaacef"];
 
 	{rank = same; 0; 1; 2; 3; 4; 5; 6; 7; 8; 9; }
 
